@@ -1,7 +1,5 @@
 # Gradle
 build/
-gradle/
-.gradle
 settings.gradle
 
 # IntelliJ
