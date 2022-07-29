@@ -1,6 +1,5 @@
 # Gradle
 build/
-settings.gradle
 
 # IntelliJ
 .idea/
