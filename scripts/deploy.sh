@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPOSITORY=/home/ubuntu/test
-PROJECT_NAME=docker-jenkins-springboot
+REPOSITORY=/home/ubuntu/launch
+PROJECT_NAME=hanghae-clone-project
 
 echo "> Build 파일 복사"
 
