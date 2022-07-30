@@ -30,3 +30,8 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// plain jar 생성 막기
+jar {
+    enabled = false
+}
