@@ -9,7 +9,7 @@ cp $REPOSITORY/deploy/*.jar $REPOSITORY/
 
 echo "> 현재 구동중인 애플리케이션 pid 확인"
 
-CURRENT_PID=$(pgrep -fl docker-jenkins-springboot | grep java | awk '{print $1}')
+CURRENT_PID=$(pgrep -fl hanghae-clone-project | grep java | awk '{print $1}')
 
 echo "현재 구동중인 어플리케이션 pid: $CURRENT_PID"
 
@@ -29,7 +29,7 @@ echo "> JAR Name: $JAR_NAME"
 
 echo "> $JAR_NAME 에 실행권한 추가"
 
-chmod +x $JAR_NAME
+chmod +xr $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 
