@@ -27,6 +27,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // For XSS Filter
+    compileOnly('org.apache.commons:commons-text:1.9')
+
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'com.h2database:h2'
     testAnnotationProcessor 'org.projectlombok:lombok'
