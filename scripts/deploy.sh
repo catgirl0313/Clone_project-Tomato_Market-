@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ubuntu/launch
+REPOSITORY=/home/ubuntu/tomato
 PROJECT_NAME=hanghae-clone-project
 
 echo "> Build 파일 복사"
