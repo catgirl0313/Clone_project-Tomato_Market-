@@ -50,7 +50,7 @@ public class Trade extends BaseEntity {
     @Column(nullable = false)
     private Long userId;
 
-    @Column(nullable = false)
+    @Column(name = "like_it", nullable = false)
     private int like;
 
     @Column(nullable = false)

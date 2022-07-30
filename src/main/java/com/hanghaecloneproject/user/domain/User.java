@@ -10,10 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
+@NoArgsConstructor
 @DynamicUpdate
 @Table(name = "users",
       indexes = {
@@ -40,6 +42,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String address;
 
+    @Setter
     private String profileImage;
 
     @Override
@@ -57,5 +60,12 @@ public class User extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public User(String username, String password, String nickname, String address) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.address = address;
     }
 }
