@@ -1,5 +1,6 @@
 package com.hanghaecloneproject.user.service;
 
+import com.hanghaecloneproject.config.security.dto.UserDetailsImpl;
 import com.hanghaecloneproject.user.domain.User;
 import com.hanghaecloneproject.user.dto.CheckNicknameDto;
 import com.hanghaecloneproject.user.dto.CheckUsernameDto;
@@ -10,21 +11,36 @@ import com.hanghaecloneproject.user.exception.DuplicateUsernameException;
 import com.hanghaecloneproject.user.exception.MismatchedPasswordException;
 import com.hanghaecloneproject.user.repository.UserRepository;
 import java.util.regex.Pattern;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d~!@#$%^&*()+|=]{8,20}$");
 
-    public UserService(UserRepository userRepository) {
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+              .map(UserDetailsImpl::new)
+              .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
     }
 
     public void signup(SignupRequestDto dto) {
         validateSignupInfo(dto);
+
+        dto.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         User user = dto.toEntity();
 
@@ -42,7 +58,7 @@ public class UserService {
 
     private void checkMatchPassword(SignupRequestDto dto) {
         if (!dto.getPassword().equals(dto.getPasswordCheck())) {
-            throw new MismatchedPasswordException("비밀번호와 비밀번호 재확인이 일치하지 않습니다.");
+            throw new MismatchedPasswordException("비밀번호와 비밀번호 재확인이 일치하지 않습니다. 다시 확인해주세요");
         }
     }
 
@@ -71,4 +87,6 @@ public class UserService {
             throw new DuplicateNicknameException("이미 존재하는 닉네임입니다. 닉네임: " + nickname);
         }
     }
+
+
 }

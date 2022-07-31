@@ -1,5 +1,6 @@
 package com.hanghaecloneproject.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hanghaecloneproject.user.domain.User;
 import java.io.Serializable;
 import javax.validation.constraints.Email;
@@ -7,8 +8,10 @@ import javax.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 
+@ToString
 @Setter
 @Getter
 @NoArgsConstructor
@@ -19,10 +22,12 @@ public class SignupRequestDto implements Serializable {
     @NotBlank private String passwordCheck;
     @NotBlank private String nickname;
     private MultipartFile profileImage;
+
+    @JsonProperty(value = "address")
     private AddressDto addressDto;
 
     public User toEntity() {
-        return new User(username, password, nickname, addressDto.toString());
+        return new User(username, password, nickname, "시군구");
     }
 
     @Setter
