@@ -1,6 +1,5 @@
 package com.hanghaecloneproject.common.error;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.Getter;
 
 @Getter
@@ -31,7 +30,4 @@ public enum ErrorCode {
         this.code = code;
         this.message = message;
     }
-
-    @JsonCreator
-    public
 }
