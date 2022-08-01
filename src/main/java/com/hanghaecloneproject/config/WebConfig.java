@@ -1,11 +1,8 @@
 package com.hanghaecloneproject.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanghaecloneproject.config.xss.HtmlCharacterEscapes;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,12 +23,5 @@ public class WebConfig implements WebMvcConfigurer {
               .exposedHeaders("*")
               .allowCredentials(true)
               .maxAge(1600);
-    }
-
-    @Bean
-    public MappingJackson2HttpMessageConverter jsonEscapeConverter() {
-        ObjectMapper copy = objectMapper.copy();
-        copy.getFactory().setCharacterEscapes(new HtmlCharacterEscapes());
-        return new MappingJackson2HttpMessageConverter(copy);
     }
 }
