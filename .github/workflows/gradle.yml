@@ -35,8 +35,8 @@ jobs:
                --output $RESOURCE_PATH/application-KEY.tar $RESOURCE_PATH/application.tar.gpg
      
     # (3) 압축해제
-    - name: Unzip application-KEY.yaml
-      run: tar xvf $RESOURCE_PATH/application-KEY.yaml
+    - name: Unzip application-KEY.tar
+      run: tar xvf $RESOURCE_PATH/application-KEY.tar
       shell: bash
 
     # (2) JDK 11 세팅
