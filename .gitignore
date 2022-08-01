@@ -14,6 +14,7 @@ HELP.md
 # Resources
 src/main/resources/application-*.yaml
 !src/main/resources/application-DEV.yaml
+src/main/resources/application.tar
 
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,intellij,windows,macos,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle,intellij,windows,macos,java
