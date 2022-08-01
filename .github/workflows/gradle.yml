@@ -12,7 +12,7 @@ env:
   S3_BUCKET_NAME: tomato-deployer
   CODE_DEPLOY_APPLICATION_NAME: tomato-deploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: tomato-deploy-group
-  RESOURCE_PATH: /home/ubuntu/app/src/main/resources
+  RESOURCE_PATH: /home/ubuntu/$PROJECT_NAME/src/main/resources
 
 permissions:
   contents: read
@@ -28,11 +28,16 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
       
-    # (1) Decrypt application-key.yaml
+    # (2) application.tar 복호화
     - name: Decrypt application-key.yaml
       run: gpg --quiet --batch --yes --always-trust
-               --decrypt --passphrase=${{ secrets.APPLICATION_YML }} 
+               --decrypt --passphrase=${{ secrets.GPG_SECRET_KEY }} 
                --output $RESOURCE_PATH/application.tar $RESOURCE_PATH/application.tar.gpg
+     
+    # (3) 압축해제
+    - name: Unzip application-KEY.yaml
+      run: tar xvf $RESOURCE_PATH/application-KEY.yaml
+      shell: bash
 
     # (2) JDK 11 세팅
     - name: Set up JDK 11
