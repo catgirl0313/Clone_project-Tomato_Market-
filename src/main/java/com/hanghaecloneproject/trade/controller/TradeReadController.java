@@ -1,8 +1,8 @@
-package com.hanghaecloneproject.trade.domain.controller;
+package com.hanghaecloneproject.trade.controller;
 
-import com.hanghaecloneproject.trade.domain.dto.PostResponseDto;
-import com.hanghaecloneproject.trade.domain.dto.PostsResponseDto;
-import com.hanghaecloneproject.trade.domain.service.TradeReadService;
+import com.hanghaecloneproject.trade.dto.PostResponseDto;
+import com.hanghaecloneproject.trade.dto.PostsResponseDto;
+import com.hanghaecloneproject.trade.service.TradeReadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;

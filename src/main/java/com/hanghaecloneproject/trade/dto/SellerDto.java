@@ -1,4 +1,4 @@
-package com.hanghaecloneproject.trade.domain.dto;
+package com.hanghaecloneproject.trade.dto;
 
 import lombok.Getter;
 import lombok.Setter;

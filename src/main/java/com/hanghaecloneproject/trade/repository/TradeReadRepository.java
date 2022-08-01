@@ -1,4 +1,4 @@
-package com.hanghaecloneproject.trade.domain.repository;
+package com.hanghaecloneproject.trade.repository;
 
 import com.hanghaecloneproject.trade.domain.Trade;
 import org.springframework.data.domain.Pageable;

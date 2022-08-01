@@ -1,7 +1,9 @@
 package com.hanghaecloneproject.trade.domain;
 
 import com.hanghaecloneproject.common.BaseEntity;
+import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -10,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -55,6 +58,9 @@ public class Trade extends BaseEntity {
 
     @Column(nullable = false)
     private int view;
+
+    @OneToMany(mappedBy = "trade", cascade = CascadeType.ALL)
+    private List<TradeImage> tradeImages;
 
     @Override
     public boolean equals(Object o) {
