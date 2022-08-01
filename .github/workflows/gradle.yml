@@ -26,6 +26,12 @@ jobs:
     # (1) 기본 체크아웃
     - name: Checkout
       uses: actions/checkout@v3
+      
+    # (1) Decrypt application-key.yaml
+    - name: Decrypt application-key.yaml
+      run: gpg --quiet --batch --yes --always-trust
+               --decrypt --passphrase=${{ secrets.APPLICATION_YML }} 
+               --output $RESOURCE_PATH/application.tar $RESOURCE_PATH/application.tar.gpg
 
     # (2) JDK 11 세팅
     - name: Set up JDK 11
