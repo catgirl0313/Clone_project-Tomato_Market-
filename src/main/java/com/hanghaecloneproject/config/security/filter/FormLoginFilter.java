@@ -71,6 +71,6 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
           HttpServletResponse response, AuthenticationException failed)
           throws IOException, ServletException {
         log.info("failed -> {}", failed.toString());
-        ErrorResponseUtils.sendError(response, new CommonResponse(ErrorCode.BAD_CREDENTIAL, failed.getMessage()));
+        ErrorResponseUtils.sendError(response, new CommonResponse<>(ErrorCode.BAD_CREDENTIAL, failed.getMessage()));
     }
 }
