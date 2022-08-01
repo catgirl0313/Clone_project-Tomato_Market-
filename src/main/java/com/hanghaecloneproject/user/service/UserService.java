@@ -74,7 +74,7 @@ public class UserService implements UserDetailsService {
 
     private void checkDuplicateUsername(String username) {
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new DuplicateUsernameException("이미 존재하는 아이디입니다. 아이디: " + username);
+            throw new DuplicateUsernameException("이미 존재하는 아이디입니다. 입력한 아이디: " + username);
         }
     }
 
@@ -84,7 +84,7 @@ public class UserService implements UserDetailsService {
 
     private void checkDuplicateNickname(String nickname) {
         if (userRepository.findByNickname(nickname).isPresent()) {
-            throw new DuplicateNicknameException("이미 존재하는 닉네임입니다. 닉네임: " + nickname);
+            throw new DuplicateNicknameException("이미 존재하는 닉네임입니다. 입력한 닉네임: " + nickname);
         }
     }
 
