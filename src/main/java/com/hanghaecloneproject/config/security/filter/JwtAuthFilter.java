@@ -13,12 +13,15 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
+@Slf4j
 public class JwtAuthFilter extends BasicAuthenticationFilter {
 
     private final UserService userService;
@@ -64,24 +67,22 @@ public class JwtAuthFilter extends BasicAuthenticationFilter {
             try {
                 refreshToken = extractTokenFromHeader(request, "refresh_token");
             } catch (IllegalArgumentException e) {
-                chain.doFilter(request, response);
+                return;
             }
             // 반드시 만료된 토큰이 있는 상태에서 refresh_token 이 있어야 함.
             VerifyResult refreshTokenVerifyResult = jwtUtils.verifyToken(refreshToken);
             if (refreshTokenVerifyResult.getTokenStatus() == TokenStatus.ACCESS) {
-                SecurityContextHolder.getContext()
-                      .setAuthentication(reIssueAccessToken(response,
-                            refreshTokenVerifyResult.getUsername()));
+                SecurityContextHolder.getContext().setAuthentication(
+                      reIssueAccessToken(response, refreshTokenVerifyResult.getUsername()));
             } else {
-                ErrorResponseUtils.sendError(response,
-                      new ErrorMessage(ErrorCode.EXPIRED_TOKEN,
+                ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.EXPIRED_TOKEN,
                             "모든 토큰이 만료되었습니다. 다시 로그인해주세요."));
-                chain.doFilter(request, response);
+                return;
             }
         } else {
-            ErrorResponseUtils.sendError(response,
-                  new ErrorMessage(ErrorCode.INVALID_TOKEN,
+            ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.INVALID_TOKEN,
                         "유효하지 않은 토큰입니다."));
+            return;
         }
         chain.doFilter(request, response);
     }
@@ -117,5 +118,10 @@ public class JwtAuthFilter extends BasicAuthenticationFilter {
         return headerValue.substring("Bearer ".length());
     }
 
-
+    @Override
+    protected void onUnsuccessfulAuthentication(HttpServletRequest request,
+          HttpServletResponse response, AuthenticationException failed) throws IOException {
+        log.info("failed -> {}", failed.toString());
+        ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.INVALID_TOKEN, failed.getMessage()));
+    }
 }

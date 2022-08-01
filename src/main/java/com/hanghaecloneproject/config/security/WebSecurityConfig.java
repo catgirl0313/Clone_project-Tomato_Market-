@@ -63,6 +63,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public FormLoginProvider formLoginProvider() {
         return new FormLoginProvider(userService, passwordEncoder);
     }
-
-
 }

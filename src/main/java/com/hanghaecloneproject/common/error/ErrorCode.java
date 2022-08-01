@@ -19,10 +19,12 @@ public enum ErrorCode {
     MISMATCH_PASSWORD(303, "비밀번호와 비밀번호 재확인이 일치하지 않습니다."),
 
     // 400번대는 데이터 관련된 에러입니다.
+    INVALID_INPUT_VALUE(400, "잘못된 값 입력입니다."),
+    METHOD_NOT_ALLOWED(401, "잘못된 값 입력입니다."),
 
     // 500번대는 서버와 관련된 에러입니다.
 
-        ;
+    ;
     private int code;
     private String message;
 
