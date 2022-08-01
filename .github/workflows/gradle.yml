@@ -33,7 +33,8 @@ jobs:
       run: gpg --quiet --batch --yes --always-trust
                --decrypt --passphrase=${{ secrets.GPG_SECRET_KEY }} 
                --output $RESOURCE_PATH/application-gpg.tar $RESOURCE_PATH/application.tar.gpg
-     
+      shell: bash
+           
     # (3) 압축해제
     - name: Unzip application-gpg.tar
       run: tar xvf $RESOURCE_PATH/application-gpg.tar
