@@ -37,7 +37,7 @@ jobs:
            
     # (3) 압축해제
     - name: Unzip application-gpg.tar
-      run: tar xvf $RESOURCE_PATH/application-gpg.tar -c $RESOURCE_PATH
+      run: tar xvf $RESOURCE_PATH/application-gpg.tar -C $RESOURCE_PATH
       shell: bash
 
     # (2) JDK 11 세팅
