@@ -1,10 +1,10 @@
-package com.hanghaecloneproject.trade.domain.service;
+package com.hanghaecloneproject.trade.service;
 
 import com.hanghaecloneproject.trade.domain.Trade;
 import com.hanghaecloneproject.trade.domain.TradeImage;
-import com.hanghaecloneproject.trade.domain.dto.PostResponseDto;
-import com.hanghaecloneproject.trade.domain.dto.PostsResponseDto;
-import com.hanghaecloneproject.trade.domain.repository.TradeReadRepository;
+import com.hanghaecloneproject.trade.dto.PostResponseDto;
+import com.hanghaecloneproject.trade.dto.PostsResponseDto;
+import com.hanghaecloneproject.trade.repository.TradeReadRepository;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -22,9 +22,6 @@ import java.util.stream.Collectors;
 public class TradeReadService {
 
     private final TradeReadRepository tradeReadRepository;
-
-
-
 
     //상세 게시글 조회
     public PostResponseDto getReadOne(Long postId) {

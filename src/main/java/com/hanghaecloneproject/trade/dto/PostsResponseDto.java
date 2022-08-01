@@ -1,4 +1,4 @@
-package com.hanghaecloneproject.trade.domain.dto;
+package com.hanghaecloneproject.trade.dto;
 
 import com.hanghaecloneproject.trade.domain.TradeCategory;
 import com.hanghaecloneproject.trade.domain.TradeStatus;
