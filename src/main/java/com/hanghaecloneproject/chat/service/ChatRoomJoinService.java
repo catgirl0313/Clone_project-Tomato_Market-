@@ -4,7 +4,9 @@ import com.hanghaecloneproject.chat.domain.ChatRoom;
 import com.hanghaecloneproject.chat.domain.ChatRoomJoin;
 import com.hanghaecloneproject.chat.repository.ChatRoomJoinRepository;
 import com.hanghaecloneproject.chat.repository.ChatRoomRepository;
+import com.hanghaecloneproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +16,7 @@ public class ChatRoomJoinService {
 
     private final ChatRoomJoinRepository chatRoomJoinRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Transactional
     public Long newRoom(String user1, String user2) {
@@ -29,8 +31,9 @@ public class ChatRoomJoinService {
     }
 
     @Transactional
-    public void createRoom(String user, ChatRoom chatRoom){
-        ChatRoomJoin chatRoomJoin = new ChatRoomJoin(userService.findUserByEmailMethod(user),chatRoom);
+    public void createRoom(String username, ChatRoom chatRoom){
+        ChatRoomJoin chatRoomJoin = new ChatRoomJoin(userRepository.findByUsername(username)
+              .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다.")), chatRoom);
         chatRoomJoinRepository.save(chatRoomJoin);
     }
 }
