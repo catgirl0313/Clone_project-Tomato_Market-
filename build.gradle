@@ -13,6 +13,11 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
+ext {
+    swagger2Version = '2.9.2'
+    oldSwagger2Version = '1.5.21'
+}
+
 
 repositories {
     mavenCentral()
@@ -39,6 +44,17 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'com.h2database:h2'
     testAnnotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
+    implementation("io.springfox:springfox-swagger2:${swagger2Version}") {
+        exclude group: 'io.swagger', module: 'swagger-annotations'
+        exclude group: 'io.swagger', module: 'swagger-models'
+    }
+
+    implementation "io.swagger:swagger-annotations:${oldSwagger2Version}"
+    implementation "io.swagger:swagger-models:${oldSwagger2Version}"
+
 }
 
 tasks.named('test') {

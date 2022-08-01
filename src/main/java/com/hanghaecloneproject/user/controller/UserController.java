@@ -1,9 +1,12 @@
 package com.hanghaecloneproject.user.controller;
 
+import com.hanghaecloneproject.common.error.CommonResponse;
+import com.hanghaecloneproject.common.error.ErrorCode;
 import com.hanghaecloneproject.user.dto.CheckNicknameDto;
 import com.hanghaecloneproject.user.dto.CheckUsernameDto;
 import com.hanghaecloneproject.user.dto.SignupRequestDto;
 import com.hanghaecloneproject.user.service.UserService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,24 +25,28 @@ public class UserController {
         this.userService = userService;
     }
 
+    @ApiOperation(value = "회원가입", notes = "회원 목록을 넣어 <big>회원가입</big>을 사용합니다.", response = ResponseEntity.class)
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(SignupRequestDto dto) {
+
+    public ResponseEntity<CommonResponse<Void>> signup(SignupRequestDto dto) {
         userService.signup(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
-              .body(null);
+              .body(new CommonResponse<>(ErrorCode.CREATE_SUCCESSFULLY));
     }
 
+    @ApiOperation(value = "아이디 중복 검사", notes = "<big>아이디 중복검사</big>를 지원하는 API 입니다.", response = ResponseEntity.class)
     @GetMapping("/idCheck/{username}")
-    public ResponseEntity<Void> idCheck(@PathVariable String username) {
+    public ResponseEntity<CommonResponse<Void>> idCheck(@PathVariable String username) {
         userService.checkDuplicateUsername(new CheckUsernameDto(username));
         return ResponseEntity.status(HttpStatus.OK)
-              .body(null);
+              .body(new CommonResponse<>(ErrorCode.SUCCESS));
     }
 
-    @PostMapping("/nicknameCheck/{nickname}")
-    public ResponseEntity<Void> nameCheck(@PathVariable String nickname) {
+    @ApiOperation(value = "닉네임 중복검사", notes = "<big>닉네임 중복검사</big>를 지원하는 API 입니다.", response = ResponseEntity.class)
+    @GetMapping("/nicknameCheck/{nickname}")
+    public ResponseEntity<CommonResponse<Void>> nameCheck(@PathVariable String nickname) {
         userService.checkDuplicateNickname(new CheckNicknameDto(nickname));
         return ResponseEntity.status(HttpStatus.OK)
-              .body(null);
+              .body(new CommonResponse<>(ErrorCode.SUCCESS));
     }
 }
