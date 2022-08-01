@@ -12,6 +12,7 @@ env:
   S3_BUCKET_NAME: tomato-deployer
   CODE_DEPLOY_APPLICATION_NAME: tomato-deploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: tomato-deploy-group
+  RESOURCE_PATH: /home/ubuntu/app/src/main/resources
 
 permissions:
   contents: read
