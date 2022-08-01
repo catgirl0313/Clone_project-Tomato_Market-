@@ -1,7 +1,7 @@
 package com.hanghaecloneproject.user.controller;
 
 import com.hanghaecloneproject.common.error.ErrorCode;
-import com.hanghaecloneproject.common.error.ErrorMessage;
+import com.hanghaecloneproject.common.error.CommonResponse;
 import com.hanghaecloneproject.user.exception.BadPasswordPatternException;
 import com.hanghaecloneproject.user.exception.DuplicateNicknameException;
 import com.hanghaecloneproject.user.exception.DuplicateUsernameException;
@@ -15,26 +15,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class UserExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<ErrorMessage> badPasswordPatternException(BadPasswordPatternException e){
+    public ResponseEntity<CommonResponse> badPasswordPatternException(BadPasswordPatternException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new ErrorMessage(ErrorCode.BAD_PASSWORD_PATTERN, e.getMessage()));
+              .body(new CommonResponse(ErrorCode.BAD_PASSWORD_PATTERN, e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorMessage> duplicateNicknameException(DuplicateNicknameException e){
+    public ResponseEntity<CommonResponse> duplicateNicknameException(DuplicateNicknameException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new ErrorMessage(ErrorCode.DUPLICATE_NICKNAME, e.getMessage()));
+              .body(new CommonResponse(ErrorCode.DUPLICATE_NICKNAME, e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorMessage> duplicateUsernameException(DuplicateUsernameException e){
+    public ResponseEntity<CommonResponse> duplicateUsernameException(DuplicateUsernameException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new ErrorMessage(ErrorCode.DUPLICATE_USERNAME, e.getMessage()));
+              .body(new CommonResponse(ErrorCode.DUPLICATE_USERNAME, e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorMessage> mismatchedPasswordException(MismatchedPasswordException e) {
+    public ResponseEntity<CommonResponse> mismatchedPasswordException(MismatchedPasswordException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new ErrorMessage(ErrorCode.MISMATCH_PASSWORD, e.getMessage()));
+              .body(new CommonResponse(ErrorCode.MISMATCH_PASSWORD, e.getMessage()));
     }
 }

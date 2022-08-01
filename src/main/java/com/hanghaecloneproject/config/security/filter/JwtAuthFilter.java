@@ -1,7 +1,7 @@
 package com.hanghaecloneproject.config.security.filter;
 
 import com.hanghaecloneproject.common.error.ErrorCode;
-import com.hanghaecloneproject.common.error.ErrorMessage;
+import com.hanghaecloneproject.common.error.CommonResponse;
 import com.hanghaecloneproject.common.error.ErrorResponseUtils;
 import com.hanghaecloneproject.config.security.dto.UserDetailsImpl;
 import com.hanghaecloneproject.config.security.jwt.JwtUtils;
@@ -75,12 +75,12 @@ public class JwtAuthFilter extends BasicAuthenticationFilter {
                 SecurityContextHolder.getContext().setAuthentication(
                       reIssueAccessToken(response, refreshTokenVerifyResult.getUsername()));
             } else {
-                ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.EXPIRED_TOKEN,
+                ErrorResponseUtils.sendError(response, new CommonResponse(ErrorCode.EXPIRED_TOKEN,
                             "모든 토큰이 만료되었습니다. 다시 로그인해주세요."));
                 return;
             }
         } else {
-            ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.INVALID_TOKEN,
+            ErrorResponseUtils.sendError(response, new CommonResponse(ErrorCode.INVALID_TOKEN,
                         "유효하지 않은 토큰입니다."));
             return;
         }
@@ -122,6 +122,6 @@ public class JwtAuthFilter extends BasicAuthenticationFilter {
     protected void onUnsuccessfulAuthentication(HttpServletRequest request,
           HttpServletResponse response, AuthenticationException failed) throws IOException {
         log.info("failed -> {}", failed.toString());
-        ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.INVALID_TOKEN, failed.getMessage()));
+        ErrorResponseUtils.sendError(response, new CommonResponse(ErrorCode.INVALID_TOKEN, failed.getMessage()));
     }
 }

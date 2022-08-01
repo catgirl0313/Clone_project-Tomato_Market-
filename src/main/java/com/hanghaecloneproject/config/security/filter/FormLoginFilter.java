@@ -2,7 +2,7 @@ package com.hanghaecloneproject.config.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hanghaecloneproject.common.error.ErrorCode;
-import com.hanghaecloneproject.common.error.ErrorMessage;
+import com.hanghaecloneproject.common.error.CommonResponse;
 import com.hanghaecloneproject.common.error.ErrorResponseUtils;
 import com.hanghaecloneproject.config.security.dto.LoginResponseDto;
 import com.hanghaecloneproject.config.security.dto.UserDetailsImpl;
@@ -71,6 +71,6 @@ public class FormLoginFilter extends UsernamePasswordAuthenticationFilter {
           HttpServletResponse response, AuthenticationException failed)
           throws IOException, ServletException {
         log.info("failed -> {}", failed.toString());
-        ErrorResponseUtils.sendError(response, new ErrorMessage(ErrorCode.BAD_CREDENTIAL, failed.getMessage()));
+        ErrorResponseUtils.sendError(response, new CommonResponse(ErrorCode.BAD_CREDENTIAL, failed.getMessage()));
     }
 }

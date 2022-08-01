@@ -2,6 +2,8 @@ package com.hanghaecloneproject.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.hanghaecloneproject.user.domain.User;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -15,29 +17,45 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @Getter
 @NoArgsConstructor
+@ApiModel(value = "회원가입 폼")
 public class SignupRequestDto implements Serializable {
 
-    @Email private String username;
-    @NotBlank private String password;
-    @NotBlank private String passwordCheck;
-    @NotBlank private String nickname;
+    @Email
+    @ApiModelProperty(value = "아이디(이메일 형식)", required = true)
+    private String username;
+
+    @NotBlank
+    @ApiModelProperty(value = "패스워드", required = true)
+    private String password;
+
+    @NotBlank
+    @ApiModelProperty(value = "패스워드 재확인", required = true)
+    private String passwordCheck;
+
+    @NotBlank
+    @ApiModelProperty(value = "닉네임", required = true)
+    private String nickname;
+
+    @ApiModelProperty(value = "프로필 사진", required = true)
     private MultipartFile profileImage;
 
     @JsonProperty(value = "address")
+    @ApiModelProperty(value = "주소", required = true)
     private AddressDto addressDto;
 
     public User toEntity() {
         return new User(username, password, nickname, "시군구");
     }
 
+    @ApiModel(value = "주소 정보를 가지는 클래스")
     @Setter
     @Getter
     public static class AddressDto implements Serializable {
 
-        private String circuit;
-        private String si;
-        private String gu;
-        private String dong;
+        @ApiModelProperty(value = "도", required = true) private String circuit;
+        @ApiModelProperty(value = "시", required = true) private String si;
+        @ApiModelProperty(value = "구", required = false) private String gu;
+        @ApiModelProperty(value = "동, 면, 읍, 등", required = true) private String dong;
 
         @Override
         public String toString() {
