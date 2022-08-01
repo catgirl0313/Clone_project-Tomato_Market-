@@ -32,7 +32,7 @@ jobs:
     - name: Decrypt application-key.yaml
       run: gpg --quiet --batch --yes --always-trust
                --decrypt --passphrase=${{ secrets.GPG_SECRET_KEY }} 
-               --output $RESOURCE_PATH/application.tar $RESOURCE_PATH/application.tar.gpg
+               --output $RESOURCE_PATH/application-KEY.tar $RESOURCE_PATH/application.tar.gpg
      
     # (3) 압축해제
     - name: Unzip application-KEY.yaml
