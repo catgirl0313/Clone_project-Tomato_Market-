@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat") //Controller의 @Messagemapping으로 할당하여, SimpleMessagingTemplate를 통해 약속된 경로나 유저게 메세지 전달
-                .setAllowedOriginPatterns("http://localhost:3000/chat") //프론트 배포주소? 아님 *?
+                .setAllowedOriginPatterns("*") //프론트 배포주소? 아님 -> 아닌데용?*?
                 .withSockJS() //오류가 발생했을 때 발생 이전 상태로 되돌리거나 대체해주는 fallback 기능을 하는 sockJS를 할당
                 .setHeartbeatTime(25000); //STOMP에서 TCP 연결이 잘 되어있는지 체킹하는 것. HTTP header를 통해 연결 상태를 주기적으로 확인. 권장타임 25초
     }
@@ -45,6 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 //    public void configureClientInboundChannel(ChannelRegistration registration) {
 //        registration.interceptors(stompHandler);
 //    }
+
 
 
 }
