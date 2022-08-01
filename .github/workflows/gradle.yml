@@ -12,7 +12,7 @@ env:
   S3_BUCKET_NAME: tomato-deployer
   CODE_DEPLOY_APPLICATION_NAME: tomato-deploy-app
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: tomato-deploy-group
-  RESOURCE_PATH: /home/runner/work/hanghae-clone-project/src/main/resources #/home/runner/work/프로젝트명/
+  RESOURCE_PATH: /home/runner/work/hanghae-clone-project//hanghae-clone-project/src/main/resources #/home/runner/work/프로젝트명/프로젝트명/
 
 permissions:
   contents: read
