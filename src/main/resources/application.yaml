@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: DEV, KEY
+    active: DB, KEY
 
   mvc:
     pathmatch:
