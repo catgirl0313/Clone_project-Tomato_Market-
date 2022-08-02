@@ -13,66 +13,52 @@ configurations {
         extendsFrom annotationProcessor
     }
 }
-ext {
-    swagger2Version = '2.9.2'
-    oldSwagger2Version = '1.5.21'
-}
-
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.28'
-
     runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    // Spring Security
+// 스프링 시큐리티
     implementation 'org.springframework.boot:spring-boot-starter-security'
+// Thymeleaf (뷰 템플릿 엔진)
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-    // For XSS Filter
-    compileOnly('org.apache.commons:commons-text:1.9')
+// JWT
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+    implementation 'com.auth0:java-jwt:3.19.1'
 
-    // JWT
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+//validation 모듈 추가
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+// https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
 
-    testCompileOnly 'org.projectlombok:lombok'
-    testRuntimeOnly 'com.h2database:h2'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
-    implementation("io.springfox:springfox-swagger2:${swagger2Version}") {
-        exclude group: 'io.swagger', module: 'swagger-annotations'
-        exclude group: 'io.swagger', module: 'swagger-models'
+// 테스트 코드를 위한 Lombok 라이브러리
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+//S3 연결 라이브러리
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
+    tasks.named('test') {
+        useJUnitPlatform()
     }
 
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-
-    implementation "io.swagger:swagger-annotations:${oldSwagger2Version}"
-    implementation "io.swagger:swagger-models:${oldSwagger2Version}"
-
-
-    //웹소캣 의존성 추가
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    implementation 'org.webjars:sockjs-client:1.1.2' //
-    implementation 'org.webjars:stomp-websocket:2.3.3-1' //
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws', version: '2.2.6.RELEASE', ext: 'pom'
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.1021'
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
 
 
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-// plain jar 생성 막기
-jar {
-    enabled = false
 }
