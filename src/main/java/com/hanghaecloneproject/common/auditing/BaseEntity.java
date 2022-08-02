@@ -1,4 +1,4 @@
-package com.hanghaecloneproject.post.domain;
+package com.hanghaecloneproject.common.auditing;
 
 
 import java.time.LocalDateTime;
