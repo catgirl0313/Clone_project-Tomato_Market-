@@ -1,6 +1,5 @@
-package com.hanghaecloneproject.user.domain;
+package com.hanghaecloneproject;
 
-import com.hanghaecloneproject.common.BaseEntity;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,17 +8,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+
+import com.hanghaecloneproject.post.domain.BaseEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicUpdate;
 
 @Getter
+@NoArgsConstructor
 @DynamicUpdate
-@Table(name = "users",
-      indexes = {
-            @Index(columnList = "username"),
-            @Index(columnList = "nickname")
-      })
 @Entity
 public class User extends BaseEntity {
 
@@ -40,6 +38,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String address;
 
+    @Setter
     private String profileImage;
 
     @Override
@@ -57,5 +56,12 @@ public class User extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public User(String username, String password, String nickname, String address) {
+        this.username = username;
+        this.password = password;
+        this.nickname = nickname;
+        this.address = address;
     }
 }
