@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                           "/chat",
                           "/api/posts").permitAll()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                    .anyRequest().authenticated())
+                    .anyRequest().permitAll())
               .addFilterAt(formLoginFilter, UsernamePasswordAuthenticationFilter.class)
               .addFilterAt(jwtAuthFilter, BasicAuthenticationFilter.class);
     }
@@ -59,8 +59,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override // ignore check swagger resource
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/v2/api-docs", "/swagger-resources/**",
-              "/swagger-ui.html", "/webjars/**", "/swagger/**");
-
+              "/swagger-ui.html", "/swagger-ui/**", "/webjars/**", "/swagger/**");
     }
 
     @Override
