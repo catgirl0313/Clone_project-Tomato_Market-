@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -24,8 +25,7 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final S3Service s3Service;
-    private static final Pattern PASSWORD_PATTERN = Pattern.compile(
-          "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d~!@#$%^&*()+|=]{8,20}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*?[a-zA-Z])(?=.*?[0-9]).{8,}$");
 
     public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository,
           S3Service s3Service) {
@@ -41,6 +41,7 @@ public class UserService implements UserDetailsService {
               .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 아이디입니다."));
     }
 
+    @Transactional
     public void signup(SignupRequestDto dto) {
         validateSignupInfo(dto);
 

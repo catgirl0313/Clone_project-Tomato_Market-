@@ -17,24 +17,24 @@ public class UserExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<CommonResponse> badPasswordPatternException(BadPasswordPatternException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new CommonResponse(ErrorCode.BAD_PASSWORD_PATTERN, e.getMessage()));
+              .body(new CommonResponse<>(ErrorCode.BAD_PASSWORD_PATTERN, e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<CommonResponse> duplicateNicknameException(DuplicateNicknameException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new CommonResponse(ErrorCode.DUPLICATE_NICKNAME, e.getMessage()));
+              .body(new CommonResponse<>(ErrorCode.DUPLICATE_NICKNAME, e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<CommonResponse> duplicateUsernameException(DuplicateUsernameException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new CommonResponse(ErrorCode.DUPLICATE_USERNAME, e.getMessage()));
+              .body(new CommonResponse<>(ErrorCode.DUPLICATE_USERNAME, e.getMessage()));
     }
 
     @ExceptionHandler
     public ResponseEntity<CommonResponse> mismatchedPasswordException(MismatchedPasswordException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body(new CommonResponse(ErrorCode.MISMATCH_PASSWORD, e.getMessage()));
+              .body(new CommonResponse<>(ErrorCode.MISMATCH_PASSWORD, e.getMessage()));
     }
 }

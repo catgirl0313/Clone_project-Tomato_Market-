@@ -11,14 +11,13 @@ import com.hanghaecloneproject.trade.repository.PostRepository;
 import com.hanghaecloneproject.user.domain.User;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
-@Component
 @RequiredArgsConstructor
 public class TradeService {
 
@@ -27,8 +26,7 @@ public class TradeService {
     private final S3Service s3Service;
 
     @Transactional
-    public PostCUDResponseDto createPost(PostRequestDto postRequestDto, List<MultipartFile> files,
-          User user) {
+    public PostCUDResponseDto createPost(PostRequestDto postRequestDto, User user) {
         validateTradeDto(postRequestDto);
 
         //post 저장
@@ -36,13 +34,17 @@ public class TradeService {
         tradeEntity.settingUserInfo(user.getAddress(), user.getId());
 
         //이미지 URL 저장하기
-        List<String> savedUrls = s3Service.uploadFileInS3(files, "trade/");
+        List<String> savedUrls = s3Service.uploadFileInS3(postRequestDto.getImage(), "trade/");
         List<TradeImage> tradeImages = savedUrls
               .stream()
               .map(TradeImage::new)
               .collect(Collectors.toList());
 
         tradeEntity.setTradeImages(tradeImages);
+
+        log.info("entity -> {}", tradeEntity);
+
+        postRepository.save(tradeEntity);
 
         //return 값 생성
         return new PostCUDResponseDto(tradeEntity, user, savedUrls);
@@ -61,7 +63,7 @@ public class TradeService {
     }
 
     private void validatePrice(PostRequestDto dto) {
-        if (dto.getPrice() > 0) {
+        if (dto.getPrice() <= 0) {
             throw new IllegalArgumentException("0원 이상의 가격을 넣어주세요.");
         }
     }
@@ -72,9 +74,9 @@ public class TradeService {
         }
     }
 
-    //게시글 수정
-    public void updatePost(Long postId, PostRequestDto postDto, List<MultipartFile> files,
-          User user) {
+    // 게시글 수정
+    @Transactional
+    public void updatePost(Long postId, PostRequestDto postDto, User user) {
         //item
         Trade trade = postRepository.findById(postId)
               .orElseThrow(() -> new IllegalStateException("해당 게시글이 없습니다."));
@@ -83,11 +85,11 @@ public class TradeService {
         validateTradeDto(postDto);
 
         // 사진 갈아끼우기
-        if (files != null) {
+        if (postDto.getImage() != null) {
             List<String> deleteUrls = trade.getTradeImages().stream()
                   .map(TradeImage::getImageUrl)
                   .collect(Collectors.toList());
-            List<String> imagePaths = s3Service.update(deleteUrls, files, "trade/");
+            List<String> imagePaths = s3Service.update(deleteUrls, postDto.getImage(), "trade/");
         }
 
         // TODO 업데이트 로직 짜야 함.
@@ -102,6 +104,7 @@ public class TradeService {
     }
 
     //게시글 삭제
+    @Transactional
     public Long deletePost(Long postId, User user) {
         //유효성 검사
         Trade trade = postRepository.findById(postId)

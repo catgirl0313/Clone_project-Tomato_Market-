@@ -7,5 +7,6 @@ public enum TradeCategory {
     SPORTS,
     MEDIA,
     FOOD,
-    ETC
+    ETC;
+
 }
