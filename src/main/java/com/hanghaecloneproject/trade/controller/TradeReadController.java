@@ -26,7 +26,6 @@ public class TradeReadController {
             @PathVariable Long postId) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("status","200")
                 .body(tradeReadService.getReadOne(postId));
 }
 
@@ -39,7 +38,6 @@ public class TradeReadController {
             @RequestParam Long lastId) {
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header("status","200")
                 .body(tradeReadService.getReadAll(keyword,location,size, lastId));
 
     }

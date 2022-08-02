@@ -1,5 +1,6 @@
 package com.hanghaecloneproject.user.service;
 
+import com.hanghaecloneproject.common.s3.S3Service;
 import com.hanghaecloneproject.config.security.dto.UserDetailsImpl;
 import com.hanghaecloneproject.user.domain.User;
 import com.hanghaecloneproject.user.dto.CheckNicknameDto;
@@ -22,12 +23,15 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final S3Service s3Service;
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(
           "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d~!@#$%^&*()+|=]{8,20}$");
 
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository,
+          S3Service s3Service) {
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.s3Service = s3Service;
     }
 
     @Override
@@ -44,7 +48,10 @@ public class UserService implements UserDetailsService {
 
         User user = dto.toEntity();
 
-        // TODO 사진 저장 로직 필요
+        if (dto.getProfileImage() != null) {
+            String savedUrl = s3Service.uploadOne(dto.getProfileImage(), "profile/");
+            user.setProfileImage(savedUrl);
+        }
 
         userRepository.save(user);
     }
@@ -64,7 +71,8 @@ public class UserService implements UserDetailsService {
 
     private void checkPasswordPattern(SignupRequestDto dto) {
         if (!PASSWORD_PATTERN.matcher(dto.getPassword()).matches()) {
-            throw new BadPasswordPatternException(("비밀번호는 최소 8자리에 숫자, 문자, 특수문자를 각각 1개 이상 포함해야 합니다."));
+            throw new BadPasswordPatternException(
+                  ("비밀번호는 최소 8자리에 숫자, 문자, 특수문자를 각각 1개 이상 포함해야 합니다."));
         }
     }
 

@@ -9,7 +9,6 @@ public class SellerDto {
     private String nickname;
     private String profile;
     private String address;
-
     public SellerDto(String nickname, String profile, String address) {
         this.nickname = nickname;
         this.profile = profile;
