@@ -4,36 +4,38 @@ import com.hanghaecloneproject.chat.domain.ChatRoom;
 import com.hanghaecloneproject.chat.domain.ChatRoomJoin;
 import com.hanghaecloneproject.chat.repository.ChatRoomJoinRepository;
 import com.hanghaecloneproject.chat.repository.ChatRoomRepository;
-import com.hanghaecloneproject.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import com.hanghaecloneproject.trade.domain.Trade;
+import com.hanghaecloneproject.trade.repository.TradeReadRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
 @Service
 public class ChatRoomJoinService {
 
-    private final ChatRoomJoinRepository chatRoomJoinRepository;
+    private final TradeReadRepository tradeReadRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
+    private final ChatRoomJoinRepository chatRoomJoinRepository;
 
-    @Transactional
-    public Long newRoom(String user1, String user2) {
-
-        ChatRoom chatRoom = new ChatRoom();
-        ChatRoom newChatRoom = chatRoomRepository.save(chatRoom);
-            //두명 다 입장 ??????????
-            createRoom(user1,newChatRoom);
-            createRoom(user2,newChatRoom);
-
-        return newChatRoom.getId();
+    public ChatRoomJoinService(TradeReadRepository tradeReadRepository, ChatRoomRepository chatRoomRepository,
+          ChatRoomJoinRepository chatRoomJoinRepository) {
+        this.tradeReadRepository = tradeReadRepository;
+        this.chatRoomRepository = chatRoomRepository;
+        this.chatRoomJoinRepository = chatRoomJoinRepository;
     }
 
     @Transactional
-    public void createRoom(String username, ChatRoom chatRoom){
-        ChatRoomJoin chatRoomJoin = new ChatRoomJoin(userRepository.findByUsername(username)
-              .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다.")), chatRoom);
-        chatRoomJoinRepository.save(chatRoomJoin);
+    public void joinChatRoom(ChatRoomCreateRequestDto dto, Long chatRoomId, Long userId) {
+        Trade trade = tradeReadRepository.findById(dto.getTradeId())
+              .orElseThrow(() -> new IllegalArgumentException("잘못된 요청입니다."));
+
+        Long sellerId = trade.getUserId();
+
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
+              .orElseThrow(() -> new IllegalArgumentException("잘못된 접근입니다."));
+
+        ChatRoomJoin chatRoomJoin1 = new ChatRoomJoin(userId, chatRoom);
+        ChatRoomJoin chatRoomJoin2 = new ChatRoomJoin(sellerId, chatRoom);
+        chatRoomJoinRepository.save(chatRoomJoin1);
+        chatRoomJoinRepository.save(chatRoomJoin2);
     }
 }

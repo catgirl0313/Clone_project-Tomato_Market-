@@ -3,9 +3,11 @@ package com.hanghaecloneproject.config.security.dto;
 import com.hanghaecloneproject.user.domain.User;
 import java.util.Collection;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+@ToString
 @NoArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 

@@ -1,64 +1,70 @@
 package com.hanghaecloneproject.chat.controller;
 
 import com.hanghaecloneproject.chat.dto.ChatMessageForm;
+import com.hanghaecloneproject.chat.dto.ChatMessageResponseDto;
 import com.hanghaecloneproject.chat.service.ChatMessageService;
+import com.hanghaecloneproject.common.error.CommonResponse;
+import com.hanghaecloneproject.common.error.ErrorCode;
+import com.hanghaecloneproject.config.security.dto.UserDetailsImpl;
+import com.hanghaecloneproject.config.security.jwt.JwtUtils;
+import com.hanghaecloneproject.config.security.jwt.VerifyResult;
+import com.hanghaecloneproject.config.security.jwt.VerifyResult.TokenStatus;
+import com.hanghaecloneproject.user.service.UserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class ChatMessageController {
+
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final UserService userService;
     private final ChatMessageService chatMessageService;
+    private final JwtUtils jwtUtils;
 
+    @MessageMapping("/sendChat") // <-/app/sendChat 목적지에 대한 메시지 처리
+    public ChatMessageResponseDto sendMessage(
+          @Payload ChatMessageForm message,
+          @Header("Authorization") String jwtToken) {
 
-    @MessageMapping("/chat") // <-/app/chat 목적지에 대한 메시지 처리
-    public void sendMessage(ChatMessageForm message) {
-        String receiver = message.getReceiver();
-        chatMessageService.save(message);
-        simpMessagingTemplate.convertAndSend("/queue/" + receiver, message);
-    } //simpMessagingTemplate 는 브로커를 설정하지 않은 경우에 주입받아 사용하는거라는데 여기서의 브로커는 RabbitMQ, ActiveMA 등 외부브로커를 말하는건가?
+        VerifyResult verifyResult = jwtUtils.verifyToken(jwtToken);
 
+        if (verifyResult.getTokenStatus() == TokenStatus.ACCESS) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) userService.loadUserByUsername(
+                  verifyResult.getUsername());
+            log.info("sendMessage: {}", message);
+            log.info("userDetails: {}", userDetails);
+
+            ChatMessageResponseDto responseDto = chatMessageService.save(message,
+                  userDetails.getUser());
+
+            simpMessagingTemplate.convertAndSend("/queue/"
+                  + message.getChatRoomId(), responseDto);
+
+            return responseDto;
+        } else {
+            throw new IllegalArgumentException("다시 로그인해주세요");
+        }
+    }
+
+    @GetMapping("/chat/{chatRoomId}")
+    public ResponseEntity<CommonResponse<List<ChatMessageResponseDto>>> showAllMessage(
+          @PathVariable Long chatRoomId) {
+        List<ChatMessageResponseDto> chatMessageList = chatMessageService.showAllMessage(
+              chatRoomId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+              .body(new CommonResponse<>(ErrorCode.SUCCESS, "전송 완료!", chatMessageList));
+    }
 }
-
-
-//    @MessageMapping("/fleet/{fleetId}/driver/{driverId}")
-//    @SendTo("/topic/fleet/{fleetId}")
-//    public Simple simple(@DestinationVariable String fleetId, @DestinationVariable String driverId) {
-//        return new Simple(fleetId, driverId);
-
-//    @MessageMapping("/chat/send")
-//    public void chat(MessageDto.Send message) {
-//        messageService.sendMessage(message);
-//        messagingTemplate.convertAndSend("/topic/chat/" + message.getReceiverId(), message);
-//    }
-//    클라이언트에서 /app/chat/send 로 메시지를 발행하므로 메시지를 처리하기 위해 MessageController에서
-//    @MessageMapping을 이용해 받아준다.
-//
-//    받은 메시지를 데이터베이스에 저장하기 위해 messageService의 sendMessage 메소드를 호출하고,
-//    messagingTemplate의 convertAndSend 메소드를 통해 /topic/chat/수신자ID 를 구독한 유저에게 해당 메시지를 보낸다.
-
-//    @PostMapping("/chat/room")
-//    public ResponseEntity<BasicResponse> JoinChatRoom(@RequestBody ChatRoomDto.Request dto) {
-//        try {
-//            Long roomId = chatRoomService.joinChatRoom(dto);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(new Result<>(roomId));
-//        } catch(IllegalStateException e) {
-//            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage(), "400"));
-//        }
-//    }
-//
-//    @GetMapping("/chat/room")
-//    public ResponseEntity<BasicResponse> getChatRoomList(@RequestParam Long memberId) {
-//        return ResponseEntity.ok(new Result<>(chatRoomService.getRoomList(memberId)));
-//    }
-//
-//    밑의 JoinChatRoom 메소드는 방을 생성하거나 이미 채팅방이 있는 경우 방의 id를 반환해준다.
-//
-//    getChatRoomList에서는 해당 유저의 채팅방 목록을 반환한다.
-//
-//    이렇게 로직을 구현하면 클라이언트에서 소켓을 연결한 후 /topic/chat/자신의id를 구독하면 자신에게 오는 메시지를 받아 처리할 수 있다.

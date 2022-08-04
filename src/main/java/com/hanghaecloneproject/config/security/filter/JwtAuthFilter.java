@@ -1,7 +1,7 @@
 package com.hanghaecloneproject.config.security.filter;
 
-import com.hanghaecloneproject.common.error.ErrorCode;
 import com.hanghaecloneproject.common.error.CommonResponse;
+import com.hanghaecloneproject.common.error.ErrorCode;
 import com.hanghaecloneproject.common.error.ErrorResponseUtils;
 import com.hanghaecloneproject.config.security.dto.UserDetailsImpl;
 import com.hanghaecloneproject.config.security.jwt.JwtUtils;
@@ -15,21 +15,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 @Slf4j
-public class JwtAuthFilter extends BasicAuthenticationFilter {
+public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final UserService userService;
     private final JwtUtils jwtUtils;
 
-    public JwtAuthFilter(AuthenticationManager authenticationManager,
-          UserService userService, JwtUtils jwtUtils) {
-        super(authenticationManager);
+    public JwtAuthFilter(UserService userService, JwtUtils jwtUtils) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
     }
@@ -116,12 +112,5 @@ public class JwtAuthFilter extends BasicAuthenticationFilter {
             throw new IllegalArgumentException("잘못된 토큰 입니다.");
         }
         return headerValue.substring("Bearer ".length());
-    }
-
-    @Override
-    protected void onUnsuccessfulAuthentication(HttpServletRequest request,
-          HttpServletResponse response, AuthenticationException failed) throws IOException {
-        log.info("failed -> {}", failed.toString());
-        ErrorResponseUtils.sendError(response, new CommonResponse(ErrorCode.INVALID_TOKEN, failed.getMessage()));
     }
 }
