@@ -1,7 +1,5 @@
 package com.hanghaecloneproject.trade.service;
 
-import com.hanghaecloneproject.common.Image.domain.ImageType;
-import com.hanghaecloneproject.common.Image.repository.ImageRepository;
 import com.hanghaecloneproject.common.s3.S3Service;
 import com.hanghaecloneproject.trade.domain.Trade;
 import com.hanghaecloneproject.trade.domain.TradeImage;
@@ -22,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TradeService {
 
     private final PostRepository postRepository;
-    private final ImageRepository imageRepository;
     private final S3Service s3Service;
 
     @Transactional
@@ -40,7 +37,9 @@ public class TradeService {
               .map(TradeImage::new)
               .collect(Collectors.toList());
 
-        tradeEntity.setTradeImages(tradeImages);
+        log.info("insert into s3 complete! -> {}", tradeImages);
+
+        tradeEntity.addTradeImages(tradeImages);
 
         log.info("entity -> {}", tradeEntity);
 
@@ -119,7 +118,6 @@ public class TradeService {
 
         //S3 사진, ImageURl, item 삭제
         s3Service.deleteFileInS3(imageUrls);
-        imageRepository.deleteByImageTypeAndObjectId(ImageType.TRADE_IMAGE, postId);
         postRepository.deleteById(postId);
         //System.out.println("삭제확인");
 

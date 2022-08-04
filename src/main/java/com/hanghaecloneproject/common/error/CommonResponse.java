@@ -4,12 +4,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.ToString;
 
-@Setter
-@Getter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @ApiModel(value = "공통 처리 Response Message")
@@ -30,6 +28,13 @@ public class CommonResponse<T> implements Serializable {
         this.code = errorCode.getCode();
         this.message = errorCode.getMessage();
         this.details = details;
+    }
+
+    public CommonResponse(ErrorCode errorCode, String details, T data) {
+        this.code = errorCode.getCode();
+        this.message = errorCode.getMessage();
+        this.details = details;
+        this.data = data;
     }
 
     public CommonResponse(ErrorCode errorCode, T data) {

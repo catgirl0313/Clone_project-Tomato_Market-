@@ -1,32 +1,35 @@
 package com.hanghaecloneproject.chat.domain;
 
 
-import com.hanghaecloneproject.user.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class ChatRoomJoin {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "join_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name =  "user_id")
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
     private ChatRoom chatRoom;
 
-    public ChatRoomJoin(User user , ChatRoom chatRoom){
-        this.user = user;
+    public ChatRoomJoin(Long userId , ChatRoom chatRoom){
+        this.userId = userId;
         this.chatRoom = chatRoom;
     }
 }

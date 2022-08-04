@@ -1,15 +1,17 @@
 package com.hanghaecloneproject.chat.domain;
 
+import com.hanghaecloneproject.common.auditing.BaseEntity;
 import com.hanghaecloneproject.user.domain.User;
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
+import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,10 +19,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+      @Index(columnList = "room_id")
+})
 @Entity
-public class ChatMessage {
+public class ChatMessage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +34,6 @@ public class ChatMessage {
     @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
-    private LocalDateTime time;
-
     @ManyToOne
     @JoinColumn(name = "room_id", nullable = false)
     private ChatRoom chatRoom;
@@ -41,9 +42,8 @@ public class ChatMessage {
     @JoinColumn(name = "user_id", nullable = false)
     private User writer;
 
-    public ChatMessage(String message, LocalDateTime time, ChatRoom chatRoom, User writer) {
+    public ChatMessage(String message, ChatRoom chatRoom, User writer) {
         this.message = message;
-        this.time = time;
         this.chatRoom = chatRoom;
         this.writer = writer;
     }

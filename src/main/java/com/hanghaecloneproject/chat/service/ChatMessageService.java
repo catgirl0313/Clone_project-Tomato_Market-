@@ -1,13 +1,16 @@
 package com.hanghaecloneproject.chat.service;
 
 import com.hanghaecloneproject.chat.domain.ChatMessage;
+import com.hanghaecloneproject.chat.domain.ChatRoom;
 import com.hanghaecloneproject.chat.dto.ChatMessageForm;
+import com.hanghaecloneproject.chat.dto.ChatMessageResponseDto;
 import com.hanghaecloneproject.chat.repository.ChatMessageRepository;
+import com.hanghaecloneproject.chat.repository.ChatRoomRepository;
 import com.hanghaecloneproject.user.domain.User;
 import com.hanghaecloneproject.user.repository.UserRepository;
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +20,23 @@ public class ChatMessageService {
 
     private final ChatMessageRepository chatMessageRepository;
     private final UserRepository userRepository;
-    private final ChatRoomService chatRoomService;
+    private final ChatRoomRepository chatRoomRepository;
 
     @Transactional
-    public void save(ChatMessageForm message) {
-        User user = userRepository.findByUsername(message.getSender())
-              .orElseThrow(() -> new UsernameNotFoundException("없는 회원입니다."));
-        ChatMessage chatMessage = new ChatMessage(message.getMessage(), LocalDateTime.now(),
-              chatRoomService.findById(message.getChatRoomId()).get(), user);
-        chatMessageRepository.save(chatMessage);
-//        noticeService.addMessageNotice(chatMessage.getChatRoom(),chatMessage.getWriter(), message.getReceiver(),chatMessage.getTime());
+    public ChatMessageResponseDto save(ChatMessageForm message, User user) {
+        ChatRoom chatRoom = chatRoomRepository.findById(message.getChatRoomId())
+              .orElseThrow(() -> new IllegalArgumentException("잘못된 요청입니다. / 없는 채팅방입니다."));
+
+        ChatMessage chatMessage = new ChatMessage(message.getMessage(), chatRoom, user);
+
+        ChatMessage save = chatMessageRepository.save(chatMessage);
+        return new ChatMessageResponseDto(save);
     }
 
-
+    public List<ChatMessageResponseDto> showAllMessage(Long chatRoomId) {
+        return chatMessageRepository
+              .findByChatRoomIdOrderByCreatedAtDesc(chatRoomId).stream()
+              .map(ChatMessageResponseDto::new)
+              .collect(Collectors.toList());
+    }
 }

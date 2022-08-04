@@ -36,8 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager(), jwtUtils);
-        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(authenticationManager(), userService,
-              jwtUtils);
+        JwtAuthFilter jwtAuthFilter = new JwtAuthFilter(userService, jwtUtils);
         http.csrf().disable();
         http.httpBasic().disable();
         http.cors(withDefaults());
@@ -48,7 +47,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/",
                           "/user/signup", "/user/login",
                           "/user/idCheck/**", "/user/nicknameCheck/**",
-                          "/chat",
                           "/api/posts").permitAll()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                     .anyRequest().permitAll())

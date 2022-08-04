@@ -19,9 +19,11 @@ import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 
+@ToString(exclude = "tradeImages")
 @Getter
 @DynamicUpdate
 @Table(name = "trade",
@@ -88,15 +90,15 @@ public class Trade extends BaseEntity {
         this.userId = userId;
     }
 
-    public void setTradeImages(List<TradeImage> tradeImages) {
+    public void addTradeImages(List<TradeImage> tradeImages) {
         for (TradeImage tradeImage : tradeImages) {
             addTradeImage(tradeImage);
         }
     }
 
     private void addTradeImage(TradeImage tradeImage) {
-        tradeImages.add(tradeImage);
         tradeImage.setTrade(this);
+        this.tradeImages.add(tradeImage);
     }
 
     public void update(PostRequestDto postRequestDto) {
