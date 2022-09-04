@@ -1,5 +1,6 @@
 <div align = center>
 <img src="https://user-images.githubusercontent.com/94362613/182839023-0d287901-4b63-43ed-aa11-786626817a26.png" width="700" height="400" />
+
 </div>
 
 ## 당근 마켓(클론 코딩) 소개
